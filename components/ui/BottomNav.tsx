@@ -15,7 +15,7 @@ export function BottomNav() {
     const pathname = usePathname();
 
     return (
-        <View className="bg-cream border-t-[3px] border-ink flex-row px-3 py-3 gap-2">
+        <View className="bg-cream border-t-[3px] border-ink flex-row px-3 py-3 gap-2 z-50">
             {TABS.map(({ href, label, icon: Icon }) => {
                 const active = pathname === href;
                 return (
