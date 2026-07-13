@@ -52,7 +52,7 @@ export default function History() {
                     <BrutalCard
                         variant="flat"
                         className="flex-row items-center gap-4"
-                        onTouchEnd={() => router.push(`/results/${item.id}` as any)}
+                        onPress={() => router.push(`/results/${item.id}` as any)}
                     >
                         <View className="w-14 h-14 rounded-brutal-sm border-[3px] border-ink bg-orange items-center justify-center">
                             <Text className="font-mono font-bold text-lg text-ink">

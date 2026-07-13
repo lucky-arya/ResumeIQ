@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { ActivityIndicator, Animated, Pressable, Text, View, StyleProp, ViewStyle } from "react-native";
 
-type Variant = "primary" | "dark" | "outline";
+type Variant = "primary" | "dark" | "outline" | "secondary";
 type Size = "default" | "sm";
 
 interface BrutalButtonProps {
@@ -21,12 +21,14 @@ const VARIANT_BG: Record<Variant, string> = {
     primary: "bg-orange",
     dark: "bg-ink",
     outline: "bg-paper",
+    secondary: "bg-green"
 };
 
 const VARIANT_TEXT: Record<Variant, string> = {
     primary: "text-ink",
     dark: "text-cream",
     outline: "text-ink",
+    secondary: "text-ink"
 };
 
 export function BrutalButton({
@@ -49,16 +51,22 @@ export function BrutalButton({
     const pressOut = () =>
         Animated.timing(translate, { toValue: 0, duration: 80, useNativeDriver: true }).start();
 
+    const isEffectivelyDisabled = disabled || loading;
+
     return (
-        <View className={`relative ${fullWidth ? "w-full" : ""} ${className ?? ""}`} style={style}>
+        <View 
+            className={`relative ${fullWidth ? "w-full" : ""} ${className ?? ""} ${isEffectivelyDisabled ? "opacity-50" : ""}`} 
+            style={style}
+        >
             {/* Shadow layer */}
             <View
                 className="absolute bg-ink rounded-brutal-sm"
                 style={{
+                    position: "absolute",
                     top: offset,
                     left: offset,
-                    width: "100%",
-                    height: "100%",
+                    right: -offset,
+                    bottom: -offset,
                 }}
             />
             <Animated.View style={{ transform: [{ translateX: translate }, { translateY: translate }] }}>
@@ -66,11 +74,10 @@ export function BrutalButton({
                     onPress={onPress}
                     onPressIn={pressIn}
                     onPressOut={pressOut}
-                    disabled={disabled || loading}
+                    disabled={isEffectivelyDisabled}
                     className={`${VARIANT_BG[variant]} border-[3px] border-ink rounded-brutal-sm
             ${size === "sm" ? "py-2.5 px-4" : "py-4 px-6"}
-            flex-row items-center justify-center gap-2
-            ${disabled ? "opacity-45" : ""}`}
+            flex-row items-center justify-center gap-2`}
                 >
                     {loading ? (
                         <ActivityIndicator color={variant === "dark" ? "#F5EFDD" : "#15130F"} />

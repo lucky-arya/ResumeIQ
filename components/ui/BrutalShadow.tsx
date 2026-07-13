@@ -1,5 +1,4 @@
-// components/ui/BrutalShadow.tsx
-import { StyleProp, StyleSheet, View, ViewProps, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, View, ViewProps, ViewStyle, TouchableOpacity } from "react-native";
 
 interface BrutalShadowProps extends ViewProps {
     offset?: number;      // shadow distance, default 6
@@ -7,6 +6,8 @@ interface BrutalShadowProps extends ViewProps {
     shadowColor?: string; // defaults to ink black
     bg?: string;          // background of the front layer
     children: React.ReactNode;
+    onPress?: () => void;
+    activeOpacity?: number;
 }
 
 // Helper to split styles into container (layout-related) and inner (styling-related) styles
@@ -45,12 +46,19 @@ export function BrutalShadow({
     bg = "#FFFDF7",
     style,
     children,
+    onPress,
+    activeOpacity,
     ...rest
 }: BrutalShadowProps) {
     const { containerStyle, innerStyle } = splitStyles(style);
+    const ContainerComponent = onPress ? TouchableOpacity : View;
 
     return (
-        <View style={[{ position: "relative" }, containerStyle]}>
+        <ContainerComponent 
+            onPress={onPress}
+            activeOpacity={activeOpacity ?? 0.7}
+            style={[{ position: "relative" }, containerStyle]}
+        >
             {/* Back layer — the "shadow" */}
             <View
                 style={{
@@ -78,6 +86,6 @@ export function BrutalShadow({
             >
                 {children}
             </View>
-        </View>
+        </ContainerComponent>
     );
 }

@@ -7,12 +7,21 @@ import { ChevronRight, Sparkle } from 'lucide-react-native';
 import React from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { auth } from "../../lib/firebase";
 
 const Home = () => {
     const router = useRouter();
 
     const { data: profile, isLoading: profileLoading } = useUserProfile();
     const { data: analyses, isLoading: analysesLoading } = useAnalysesHistory();
+
+    React.useEffect(() => {
+        const fetchToken = async () => {
+            const token = await auth.currentUser?.getIdToken();
+            console.log("Firebase ID Token:", token);
+        };
+        fetchToken();
+    }, []);
 
     const firstName = profile?.name?.split(" ")[0] ?? "there";
     const latest = analyses?.[0] ?? null;
@@ -106,7 +115,7 @@ const Home = () => {
                                     variant="flat"
                                     bg="#F5841F"
                                     className="flex-1 gap-6"
-                                    onTouchEnd={() => router.push("/analyze")}
+                                    onPress={() => router.push("/analyze")}
                                 >
                                     <Text className="font-sans font-bold text-ink">New Analysis</Text>
                                 </BrutalCard>
@@ -114,7 +123,7 @@ const Home = () => {
                                     variant="flat"
                                     bg="#A9B8F2"
                                     className="flex-1 gap-6"
-                                    onTouchEnd={() => router.push("/history")}
+                                    onPress={() => router.push("/history")}
                                 >
                                     <Text className="font-sans font-bold text-ink">Past Reports</Text>
                                 </BrutalCard>
@@ -140,7 +149,7 @@ const Home = () => {
                         <BrutalCard
                             variant="flat"
                             className="flex-row items-center gap-4"
-                            onTouchEnd={() => router.push(`/results/${item.id}` as any)}
+                            onPress={() => router.push(`/results/${item.id}` as any)}
                         >
                             <View className="w-12 h-12 rounded-brutal-sm border-[3px] border-ink bg-orange items-center justify-center">
                                 <Text className="font-mono font-bold text-sm text-ink">

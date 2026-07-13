@@ -1,5 +1,4 @@
-// components/ui/BrutalCard.tsx
-import { View, ViewProps } from "react-native";
+import { View, ViewProps, TouchableOpacity } from "react-native";
 import { BrutalShadow } from "./BrutalShadow";
 
 interface BrutalCardProps extends ViewProps {
@@ -7,6 +6,8 @@ interface BrutalCardProps extends ViewProps {
     bg?: string;
     padding?: number;
     children: React.ReactNode;
+    onPress?: () => void;
+    activeOpacity?: number;
 }
 
 export function BrutalCard({
@@ -15,11 +16,16 @@ export function BrutalCard({
     padding = 16,
     style,
     children,
+    onPress,
+    activeOpacity,
     ...rest
 }: BrutalCardProps) {
     if (variant === "flat") {
+        const CardComponent = onPress ? TouchableOpacity : View;
         return (
-            <View
+            <CardComponent
+                onPress={onPress}
+                activeOpacity={activeOpacity ?? 0.7}
                 style={[
                     {
                         backgroundColor: bg,
@@ -30,15 +36,21 @@ export function BrutalCard({
                     },
                     style,
                 ]}
-                {...rest}
+                {...(rest as any)}
             >
                 {children}
-            </View>
+            </CardComponent>
         );
     }
 
     return (
-        <BrutalShadow bg={bg} style={[{ padding }, style]} {...rest}>
+        <BrutalShadow 
+            bg={bg} 
+            style={[{ padding }, style]} 
+            onPress={onPress}
+            activeOpacity={activeOpacity}
+            {...rest}
+        >
             {children}
         </BrutalShadow>
     );

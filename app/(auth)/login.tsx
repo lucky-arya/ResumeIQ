@@ -3,7 +3,7 @@ import { BrutalInput } from "@/components/ui/BrutalInput";
 import { logIn } from "@/lib/auth";
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, KeyboardAvoidingView, Platform } from "react-native";
 
 export default function Login() {
     const router = useRouter();
@@ -30,56 +30,62 @@ export default function Login() {
     };
 
     return (
-        <ScrollView className="flex-1 bg-cream" contentContainerStyle={{ flexGrow: 1 }}>
-            <View className="px-6 pt-16 pb-8 flex-1">
-                <Text className="font-mono text-xs font-bold uppercase tracking-widest text-orange-dark">
-                    Welcome Back
-                </Text>
-                <Text className='font-display text-4xl mt-2 leading-none text-ink'>
-                    Log In To{"\n"}Your Account
-                </Text>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+            className="flex-1 bg-cream"
+        >
+            <ScrollView className="flex-1" contentContainerStyle={{ flexGrow: 1 }}>
+                <View className="px-6 pt-16 pb-8 flex-1">
+                    <Text className="font-mono text-xs font-bold uppercase tracking-widest text-orange-dark">
+                        Welcome Back
+                    </Text>
+                    <Text className='font-display text-4xl mt-2 leading-none text-ink'>
+                        Log In To{"\n"}Your Account
+                    </Text>
 
-                <View className="gap-5 mt-8">
-                    <BrutalInput
-                        label="Email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChangeText={setEmail}
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                    />
-                    <BrutalInput
-                        label="Password"
-                        placeholder="Enter your password"
-                        secureTextEntry
-                        value={password}
-                        onChangeText={setPassword}
-                    />
+                    <View className="gap-5 mt-8">
+                        <BrutalInput
+                            label="Email"
+                            placeholder="you@example.com"
+                            value={email}
+                            onChangeText={setEmail}
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                        />
+                        <BrutalInput
+                            label="Password"
+                            placeholder="Enter your password"
+                            secureTextEntry
+                            value={password}
+                            onChangeText={setPassword}
+                        />
 
-                    {error ? (
-                        <Text className="text-red text-sm font-sans font-medium mt-3 mb-4 mx-4">
-                            {error}
-                        </Text>
-                    ) : null}
+                        {error ? (
+                            <Text className="text-red text-sm font-sans font-medium mt-3 mb-4 mx-4">
+                                {error}
+                            </Text>
+                        ) : null}
 
-                    <BrutalButton
-                        label="Log In"
-                        onPress={handleLogin}
-                        loading={loading}
-                    />
+                        <BrutalButton
+                            label="Log In"
+                            onPress={handleLogin}
+                            loading={loading}
+                        />
+                    </View>
+
+                    <Text className="text-center mt-8 font-sans text-sm text-ink-soft">
+                        {"Don't have an account? "}
+                        <Link
+                            href="/signup"
+                            className="text-ink font-bold underline"
+                        >
+                            Sign Up
+                        </Link>
+                    </Text>
                 </View>
-
-                <Text className="text-center mt-8 font-sans text-sm text-ink-soft">
-                    {"Don't have an account? "}
-                    <Link
-                        href="/signup"
-                        className="text-ink font-bold underline"
-                    >
-                        Sign Up
-                    </Link>
-                </Text>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 

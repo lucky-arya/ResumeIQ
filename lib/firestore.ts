@@ -1,5 +1,14 @@
 import { collection, doc, getDoc, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 import { db } from "./firebase";
+import { addDoc, serverTimestamp } from "firebase/firestore";
+
+
+export interface AnalysisInput {
+    uid: string;
+    fileName: string;
+    overallScore: { conetnt: number; ats: number; keywords: number; formatting: number };
+    tips: { icon: string; text: string }[];
+}
 
 
 
@@ -7,7 +16,7 @@ export interface UserProfile {
     name: string;
     email: string;
     photoUrl: string | null;
-    paln: string;
+    plan: string;
     createdAt: any;
 }
 
@@ -58,4 +67,23 @@ export const getLatestAnalysis = async (uid: string): Promise<Analysis | null> =
         console.error("Error getting latest analysis:", error);
         return null;
     }
-}
+}
+
+
+
+export async function saveAnalysis(input: AnalysisInput): Promise<string> {
+    const userRef = doc(db, "users", input.uid);
+    const { uid, ...rest } = input;
+    const docRef = await addDoc(collection(db, "analyses"), {
+        ...rest,
+        userRef,
+        createdAt: serverTimestamp(),
+    });
+    return docRef.id; // used to navigate straight to this result
+}
+
+
+export async function getAnalysisById(id: string): Promise<Analysis | null> {
+    const snap = await getDoc(doc(db, "analyses", id));
+    return snap.exists() ? ({ id: snap.id, ...snap.data() } as Analysis) : null;
+}

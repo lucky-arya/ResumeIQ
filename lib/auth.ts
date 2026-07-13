@@ -5,7 +5,7 @@ import {
     signOut,
     updateProfile,
 } from "firebase/auth";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "./firebase";
 
 export async function signUp(name: string, email: string, password: string) {
@@ -31,4 +31,12 @@ export async function logIn(email: string, password: string) {
 
 export async function logOut() {
     await signOut(auth);
+}
+
+export async function updateUserName(newName: string) {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not authenticated");
+
+    await updateProfile(user, { displayName: newName });
+    await updateDoc(doc(db, "users", user.uid), { name: newName });
 }

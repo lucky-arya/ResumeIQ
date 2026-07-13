@@ -10,6 +10,7 @@ export interface CloudinaryUploadResult {
   original_filename: string;
   bytes: number;
   format: string;
+  delete_token?: string;
 }
 
 /**
@@ -44,5 +45,24 @@ export async function uploadResumeToCloudinary(file: {
     throw new Error(`Cloudinary upload failed: ${errorText}`);
   }
 
+  return response.json();
+}
+
+
+export const removeFromCloudinary = async (deleteToken: string) => {
+  const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/delete_by_token`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      token: deleteToken,
+    }),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Cloudinary delete failed: ${errorText}`);
+  }
   return response.json();
 }
